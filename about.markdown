@@ -6,12 +6,12 @@ permalink: /about/
 ---
 
 This blog brings information about [Lightning
-Network](/channels/2020/12/04/what-is-lightning-network.html) --
+Network](/lightning/2020/12/04/welcome-to-lightningconductors.html) --
 privacy focused, scalable and trustless crypto-currency payment
 system.
 
-To stay up to date with the changes and new articles copy our [RSS
-feed](/feed.xml) to your feed reader.
+[Please get in touch](info@lightningconductors.net), if you would like
+to contribute with an article or have any comments or suggestions.
 
-If you would like to contribute with an article, please send your
-manuscript to [our email](info@lightningconductors.net).
+To stay up to date with the changes and new articles subscribe via [RSS
+readed](/feed.xml).
