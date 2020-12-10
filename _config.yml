@@ -22,7 +22,7 @@ title: LightningConductors
 email: info@lightningconductors.net
 
 description: >- # this means to ignore newlines until "baseurl:"
-  Blog focused on lightning network -- second layer solutiong for Bitcoin
+  Conducting research of lightning network -- second layer solutiong for Bitcoin
   and other blockchain based payment systems.
 
 baseurl: "" # the subpath of your site, e.g. /blog
