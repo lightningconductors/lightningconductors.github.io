@@ -14,4 +14,4 @@ system.
 to contribute with an article or have any comments or suggestions.
 
 To stay up to date with the changes and new articles subscribe via [RSS
-readed](/feed.xml).
+reader](/feed.xml).

@@ -17,3 +17,11 @@ During the opening of a payment channel the participants deposit Bitcoin satoshi
 The payments between participants that lack a direct channel is resolved by finding a multi-hop path. During the payment the nodes on the path reveal a secret in exchange for the transacted value.
 
 This way the lightning network brings private, affordable systems for even more bitcoin users and enables a whole new space for experimentation and development of novel technologies.
+
+# Use Lightning Network
+
+The simplest way to use lightning network is through one of smart-phone application. Some application offer full control of the keys in a trust-less setup, other keep custody of your funds, but offer a better user experience. 
+
+The non-custodial solutions with smooth user experience are Breez Wallet or Phoenix Wallet. Both those applications only rely on a third party to provide data about the bitcoin transactions and network status.
+
+A solution for maintaining the full bitcoin/lightning node and your you can refer to one of many articles how to [safely run a full node](https://degreesofzero.com/article/lightning-network-node-setup-backup-and-recovery.html).
