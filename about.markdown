@@ -15,3 +15,8 @@ to contribute with an article or have any comments or suggestions.
 
 To stay up to date with the changes and new articles subscribe via [RSS
 reader](/feed.xml).
+
+Disclaimer: This website is for entertainment purposes only and should
+not be taken as ultimate guide to secure your secrets. The authors and
+operator of the website are not responsible for any losses and damages
+resulting from use of the information provided.
