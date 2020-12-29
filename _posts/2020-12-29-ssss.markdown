@@ -1,0 +1,166 @@
+---
+layout: post
+title:  "Shamir Secret Sharing Scheme wallet recovery"
+date:   2020-12-29 16:20:42 UTC 2020
+categories: cryptocurrencies python shamir
+---
+
+Private keys that enable spending of cryptocurrencies are usually generated from a cryptographic seed, i.e. large random number that can be encoded as an easy to record word mnemonic (seed mnemonic). As such the mnemonic has to be well protected because if found by an unauthorised person might lead to a loss of funds. Hence, many methods of seed splitting have been suggested, such as trivial mnemonic division into parts, native blockchain multisig, which requires signatures of a number of separately stored private keys, or protecting the seed with a passphrase saved in another place.
+
+[Shamir secret sharing][wiki-shamir] scheme (SSSS) is a cryptographic method designed to split a secret into a number of parts (shares) safely. Yet, SSSS offers a strong cryptographic guarantees, such that finding of a single share by an attacker does not compromise the security of the original secret (unlike the seed division would). Moreover, it can be set up in a way that only a certain number of shares are required which allows for a wallet recovery even when some of the shares are destroyed.
+
+Several teams have worked on creating an implementation the SSSS for cryptocurrencies. The new hardware wallet Trezor T by SatoshiLabs has released [Satoshi Labs improvement proposal SLIP-39][slip39] and implemented a Python library `shamir-mnemonic`. An alternative experimental implementation of [Ian Coleman in Javascript][iancoleman-slip39] is available online.
+
+Unfortunately, not many hardware nor software wallets have implemented the method in their products so far, leaving the users completely reliant on a Trezor T to recover the wallets. Fortunately, the specification is public and the source code of the reference implementation is available. This article describes the process of wallet recovery on a computer with a freely licensed software. 
+
+## Safety Note
+
+Special care is needed if you deal with private keys that currently hold funds or are going to hold them in the future. As the current computing system contain a lot of programs with many possible bugs it the dealing with valuable wallets should be done with care.
+
+The process of wallet recovery then should be done on an computer that is never connected to the internet, so it's not possible to get the secrets compromised. A good strategy to use a [Tails GNU/Linux operating system][tails]. Tails does not leave any traces on the computer by default and allows to disable the internet connection at the startup.
+
+## Generating Shamir Master Secret
+
+### In a Hardware Wallet
+
+The propose of the hardware wallet is to keep separation between the keys that control the wallet and any other information. The hardware wallet does not reveal the master secret nor any other private information outside of the hardware device. Instead it uses the private keys to sign messages and transactions that are provided from the connected software wallet on the computer via an USB cable.
+
+Nevertheless, the information that Trezor does give away are the master public key and other information of the account. This information can still be sensitive as it gives anyone who has it the knowledge of all the addresses that this wallet can access not only now, but also in the past and future. It is up to the user to decide who does she trust with such information. For maximal security it is recommendable not to use any third party web portals, but instead use the software run at your own computer.
+
+For the generation of shamir secret follow the guide on the screen when you are setting up the software wallet. 
+
+## In a Software
+
+If you don't own the hardware device, but despite that would like to setup the SSSS you can do so in a python library `shamir-mnemonic` (which can be obtained via `pip install shamir-mnemonic`). Then a command line program `shamir` allowing both wallet creation and recovery becomes available. 
+
+The Shamir scheme allows to split the shares in two levels. First level is a group secret that can be further split to a second level shares. Only the shares of the same group can recover the group secret. The total number of shares `N>=1` are created within the group. The predefined number of shares that is necessary to recover the secret is called threshold (here share threshold number `T`). The scheme allows to create several groups out of which a group threshold (option `--threshold T`) have to be provided to get the master secret leading to the wallet.
+
+The `shamir create --help` gives you a hint on how to use the program for both predefined schemes (`single`, `2of3`, `master`) or allows to create `custom` scheme. 
+
+When the `custom` scheme is chosen, the conditions for individual groups have to be provided (`--group t n` option where `t` is the share threshold -- out of `n` needed to recover the group secret). Also, a threshold number (option `--threshold T`) is needed to specify how many groups out of required number are necessary.
+
+For the sake of example we create new wallet with a scheme `2of3` which has a single group of 3 keys out of which 2 are required for a successful wallet recovery.
+
+```
+$ shamir create 2of3
+```
+which gives the output
+
+```
+Using master secret: 507f7c3b531e50b520335ab71d500277
+Group 1 of 1 - 2 of 3 shares required:
+step roster academic acid civil receiver promise mansion elephant swimming greatest makeup extra always biology quiet webcam width humidity domain
+step roster academic agency custody genius crucial pupal elbow debris speak violence toxic advocate equation infant wolf true library expand
+step roster academic always dynamic acne simple trial legs carpet garlic spirit relate cards satoshi drove very pitch modern deny
+```
+with three shares -- one in a paragraph starting with `step roster academic`. When recovering the wallet, the first three words serve as the identifier of the group.
+
+## Secret Recovery
+
+One way we can use for the secret recovery is to initiate the process of wallet recovery within Trezor. The hardware wallet recognises if we are entering the Shamir shares or BIP-39 seed mnemonic and guide us through the process of the recovery. It also remembers our status of the recovery process when unplug and turned off, so it's not necessary enter them in one go. This allows for wallet recovery in case that the shares are physically not in the same place (e.g. divided between a number of executives of a company).
+
+The alternative way of recovery is not often considered in the manual. The contribution of this article is to describe exactly this process. As described in the previous section, it requires the `shamir-mnemonic` python package installed on the computer.
+
+When recovering the wallet we start the scheme with `shamir recover` (and perhaps an optional argument `--passphrase` if you provided one at the wallet creation). 
+
+```
+$ shamir recover
+```
+
+Once we start entering the shares, the tool recognises the required number of groups and shares in each group. Once we enter those, the master secret is returned. Our output then might look somehow similar to this:
+
+```
+Enter a recovery share: step roster academic always dynamic acne simple trial legs carpet garlic spirit relate cards satoshi drove very pitch modern deny
+
+⛬ 1 of 2 shares needed from group step roster academic
+Enter a recovery share: step roster academic acid civil receiver promise mansion elephant swimming greatest makeup extra always biology quiet webcam width humidity domain
+
+✓ 2 of 2 shares needed from group step roster academic
+SUCCESS!
+Your master secret is: 507f7c3b531e50b520335ab71d500277
+```
+
+So now we know what the secret was -- but what can we do with that? You probably guess right -- recover your wallet.
+
+## Wallet Recovery
+
+In this example we have decided to recover the wallet in the Electrum SPV (simple payment verification) desktop wallet. The master secret is not possible to enter directly so we need to use a prepared script which allows us to convert the master secret to a so called master private key (xpriv key). This key allows us to have full control over the funds as it is possible to generate the same set of addresses and corresponding private keys as we have within the Trezor T.
+
+The script for the conversion is created running the following code sniped in a terminal:
+
+```
+$ cat > wallet_from_bip32seed.py << EOF
+from electrum.bip32 import BIP32Node
+
+def main():
+    import sys
+
+    if len(sys.argv) > 1:
+        seed = sys.argv[1]
+    else:
+        seed = sys.stdin.readline().split()
+    bip32_seed = bytes.fromhex(seed)
+
+    wallet_type = "p2wpkh"
+    standard_path = {
+        "p2wpkh": "m/84'/0'/0'",
+        "p2wpkh-p2sh": "m/49'/0'/0'"
+    }
+
+    rootnode = BIP32Node.from_rootseed(bip32_seed, xtype=wallet_type)
+    node = rootnode.subkey_at_private_derivation(standard_path[wallet_type])
+
+    print(wallet_type, standard_path[wallet_type])
+    print(node.to_xprv())
+
+if __name__ == "__main__":
+    main()
+EOF
+```
+
+This creates a python script `wallet_from_bip32seed.py` which relies on Electrum to be installed on your computer. If that is not the case follow the instruction on the [electrum website][electrum-install] as installation from python sources. In case you are just experimenting with a wallet without any coins you can do it on your computer. 
+
+In case you would like to do it in recommended Tails OS, fist install the libraries on a persistent disk, then restart your computer and start Tails OS again and without internet connection. Then you can follow the rest of the manual.
+
+After saving the code above run:
+
+```
+$ python3 wallet_from_bip32seed.py <master-secret>
+```
+
+where you replace `<master-secret>` by your master secret obtained above, i.e. in our case `507f7c3b531e50b520335ab71d500277`. The output
+
+```
+p2wpkh m/84'/0'/0'
+zprvAdubcVvpc6pwTfBjeRD9n26Mm4ecns54j9vp9wDEzxkSNHTpurreyERV5J9RFHT6UXVMAEefMoS22AMVtyfgTU6oSFP5s7Lz1jDVCvW2RZf
+```
+shows the wallet path and the master private key. This master private key can then be imported to electrum to recover a wallet. 
+
+1. In Elecrum go to File 
+2. New/Restore 
+3. Choose the file and click Next 
+4. Standard Wallet 
+5. Create New Seed 
+6. Use Master Key
+7. Insert the key generated in previous step
+8. Choose password to encrypt the wallet
+9. Electrum opens with the same set of addresses as in Trezor.
+
+## Limitations
+
+The use of the SSSS has often be pointed out for its [shortcomings][casa-shortcomings] and the complexity of the implementations. For this reason many people suggest avoiding use of SSSS completely and prefer using internal multisig which is native in almost all cryptocurrencies. The multisig avoids a single point of failure and audibility of the transaction as it is clear which keys have been compromised. For more details you can refer for the above mentioned article [article][casa-shortcomings].
+
+However, compared to other seed splitting methods (e.g. multisig) SSSS has the advantage that it allows splitting the seed of a wallet that already has the funds in without the need of moving those funds to another wallet. This often allows for considerable savings which would otherwise be required for the transaction fees. The process of this is out of the scope of this article.
+
+Also, similarly to multisig SSSS allows the seed recovery using only a selected threshold number of parts from the generated total number of parts. This can allow the seed recovery even in the case when some of the shares are inaccessible or destroyed.
+
+I see this limitations more as a problem of lack of adoption and known standards rather then fundamental flaws in the SSSS technology. It can be expected that we are going to see more SSSS in the future.
+
+[wiki-shamir]: https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing
+[slip39]: https://github.com/satoshilabs/slips/blob/master/slip-0039.md
+[tails]: https://tails.boum.org/
+[iancoleman-slip39]: https://iancoleman.io/slip39/
+[iancoleman-bip39]: https://iancoleman.io/bip39/
+[casa-shortcomings]: https://blog.keys.casa/shamirs-secret-sharing-security-shortcomings/
+[electrum-install]: https://electrum.org/#download
+ 
