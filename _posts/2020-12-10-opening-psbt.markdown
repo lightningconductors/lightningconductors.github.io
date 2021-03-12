@@ -38,7 +38,7 @@ First you need to connect to all the nodes you would like to open the channel wi
 
 To initiate the channel opening run:
 ```
-lncli openchannel --psbt <node_ID> --no_publish
+lncli openchannel --psbt <node_ID> --local_amt 1000000 --no_publish
 ```
 where the `<node_ID>` is the node you would like to open the channel with. In another terminal run the command for all the nodes you are opening the channel with. For the last node remove the `--no_publish` option, but make sure you finalise it as the last one, otherwise you might loose your funds.
 
