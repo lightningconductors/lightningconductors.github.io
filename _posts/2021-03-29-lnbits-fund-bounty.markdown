@@ -100,8 +100,6 @@ The support ticket extension could have a fixed submission fee (perhaps even a w
 The LNbits also has an API interface that can be used from other projects. One useful application would be the adaptation of the [sputn1ck fundraising][sputn1ckgit] project to allow it to use the LNbits API in addition to `lnd` interface. Some further functionalities might need to be added to LNbits in order to use it in that way, but many are already implemented -- like the invoice creation and quoting the amount with the Invoice/read key.
 
 
-## Final thoughts
-
 This article describes a practical way of doing a bounty fundraising, assignment and payouts for github issues. It can obviously be extended to any useful work even in the physical space that others can do for you or the community.
 
 
