@@ -85,23 +85,25 @@ Now we should be careful about the way we share the link safely. For that reason
 
 Of course, another way to send the bounty to the contributors is to ask them for their invoice. However, the LNURL way is more practical, as there are no time limit within which the payment has to be settled as it is the case with lightning invoices.
 
+## Final thoughts and further work
+
+The controversy of such fundraising system is the custody of the funds. First the operator of the LNbits server could just disappear with the funds. Second, the user that start the fundraising needs to be trusted and potentially abuse the funds and never deliver actual results. Those risks can never be completely mitigated, so the contributors should verify how trust-worthy the involved parties are to protect themselves from scams.
+
+The fundraising initiator should consider an ideal workflow for the fundraising to offer more clarity to the donors. It makes sense that the fundraising has a specific deadline when it should finish and the same can be applied for the actual work delivery to make sure it is completed within a reasonable time frame. 
+
+If the work is not completed by then, it would be fair to return the funds to the donors. Sending the funds through the LNURLw in this case might be too much of a hassle for the fundraising initiator, thus another way of returning the funds is needed. One way of doing it could be to allow the donor to provide an invoice key on their LNbits account, so that the system could reimburse them automatically in case the fundraising is cancelled. Other way would allow the donors above a certain amount to enter their reimbursement details. Finally, the fundraising could specify what happens with the funds in case that the work fails (e.g. charity donation, forwarding the money to fund other issues).
+
+Further improvements of the Paywall fundraising might be beneficial, in particular an option to stop the fundraising is currently not available. It could be done in different ways, as for instance adding a fundraising target  or select point in time when it would stop. The fundraising target would also be useful for the purposes of Paywall. In this case the Paywall could allow gratis access to all users after reaching the funding target.
+
+The support ticket extension could have a fixed submission fee (perhaps even a word limit) to motivate the users to explain themselves clearly on their contributions.
+
+The LNbits also has an API interface that can be used from other projects. One useful application would be the adaptation of the [sputn1ck fundraising][sputn1ckgit] project to allow it to use the LNbits API in addition to `lnd` interface. Some further functionalities might need to be added to LNbits in order to use it in that way, but many are already implemented -- like the invoice creation and quoting the amount with the Invoice/read key.
+
+
 ## Final thoughts
 
 This article describes a practical way of doing a bounty fundraising, assignment and payouts for github issues. It can obviously be extended to any useful work even in the physical space that others can do for you or the community.
 
-The LNbits also has an API interface that can be used from other projects. One useful application would be the adaptation of the [sputn1ck fundraising][sputn1ckgit] project to allow it to use the LNbits API in addition to `lnd` interface.
-
-Some further functionalities could also be beneficial to be added to LNbits in order to use it in that way. One of them being the ability to quote the amount already raised and specification of the fundraising target. 
-
-The fundraising target would also be useful for the purposes of Paywall. In this case the Paywall could allow gratis access to all users after reaching the funding target.
-
-Further improvements of the Paywall fundraising that might be worthy are the possibility of adding a fundraising target and end of the fundraising. Once the target or the selected time is reached, the fundraising would stop. 
-
-The support ticket extension could have a fixed submission fee (perhaps even a word limit) to motivate the users to explain themselves clearly on their contributions.
-
-Also, some tasks only makes sense, if it's done before a certain deadline as a way to make sure it is completed within a reasonable time frame. If the work is not completed by then, it would be fair to return the funds to the donors. Sending the funds through the LNURLw in this case might be too much of a hassle for the fundraising initiator, thus another way of returning the funds is needed. One way of doing it could be to allow the donor to provide an invoice key on their LNbits account, so that the system could reimburse them automatically in case the fundraising is cancelled. 
-
-The other controversy is the custody of the funds. First the operator of the LNbits server could just disappear with the funds. Second, the user that start the fundraising needs to be trusted and potentially abuse the funds and never deliver actual results. Those risks can never be completely mitigated, so the contributors should verify how trust-worthy the involved parties are to protect themselves from scams.
 
 ## Acknowledgement
 
