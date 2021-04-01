@@ -56,7 +56,7 @@ lncli wallet psbt finalize <PSBT>
 ```
 That gives you a `final_tx` hexadecimal string that is again entered to the channel opening prompts.  Just make sure, that the channel opening without `--no_publish` option goes as the last one.
 
-If everything goes through smoothly, you are returned the TXID of the transaction opening your channels. However my experience was not that straight forward. As one of the peers I have tried to open the channel with had a large minimal channel amount that I was planing to submit, my transaction failed before the final transaction could be broadcast. The channels with the other peers stayed pending. I had to abandon the pending channels with `lncli abandonchannel` that is only available in dev build of `lncli` (so I had to recompile from the source using `make tags=dev && make install tags=dev`. Before I could re-initiate the channel opening as specified in the [lnd git issue][gitissue].
+If everything goes through smoothly, you are returned the TXID of the transaction opening your channels. However my experience was not that straight forward. As one of the peers I have tried to open the channel with had a large minimal channel amount that I was planing to submit, my transaction failed before the final transaction could be broadcast. The channels with the other peers stayed pending. I had to abandon the pending channels with `lncli abandonchannel` that is only available in dev build of `lncli` (so I had to recompile from the source using `make tags=dev && make install tags=dev`). Before I could re-initiate the channel opening as specified in the [lnd git issue].
 
 [psbt]: /channels/2020/12/10/opening-psbt.html
 [lnd git issue]: https://github.com/lightningnetwork/lnd/issues/5081
