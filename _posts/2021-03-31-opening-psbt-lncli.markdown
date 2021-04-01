@@ -60,3 +60,14 @@ If everything goes through smoothly, you are returned the TXID of the transactio
 
 [psbt]: /channels/2020/12/10/opening-psbt.html
 [lnd git issue]: https://github.com/lightningnetwork/lnd/issues/5081
+
+## Ad
+
+Thanks for reading this article. If you liked it please share, [subscribe to RSS feed][RSS] and to recognise its value consider a [donation]. Also, feel free to [get in touch][mailme] if you have any advice for improvements or suggestions for further research.
+
+[RSS]: https://blog.lightningconductors.net/feed.xml
+[donation]: https://btcpay.lightningconductors.net/api/v1/invoices?storeId=FFPzRyoNZHuENk4uyNSehkscnDsRLWZpLedmCzipt9tU&checkoutDesc=Thanks+for+donating+to+lightningconductors.net&price=42&currency=sats
+
+[mailme]: mailto:info@lightningconductors.net
+
+
